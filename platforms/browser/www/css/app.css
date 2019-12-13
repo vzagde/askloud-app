@@ -1,0 +1,185 @@
+html, body, div, section, button, h1, h2, h3, h4, h5, p {
+	font-family: 'PT Sans', sans-serif;
+}
+
+.pad0 {
+	padding: 0 !important;
+}
+
+.mar0 {
+	margin: 0 !important;
+}
+
+.bg-transparent {
+	background: transparent !important;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.btn-app {
+    background: #ffffff;
+    color: #FA8072;
+    border: 1px solid #FA8072;
+    font-size: 15px;
+    margin: 15px;
+    height: 40px;
+    padding: 3px 15px;
+}
+
+.btn-app:hover {
+	background: #FA8072;
+    color: #ffffff;
+}
+
+.padtb50 {
+	padding: 50px 0 !important;
+}
+
+.navbar, .subnavbar, .toolbar {
+	background: #FA8072;
+}
+
+.facebook-name {
+	font-weight: bold;
+}
+
+.option_selection {
+	display: inline-block;
+	width: auto;
+    height: auto;
+    padding: 10px;
+    background: #c2c2c2;
+    margin: 5px;
+    font-size: 15px;
+    color: #ffffff;
+}
+
+.bg-green {
+	background: #3ba73b;
+}
+
+.bg-red {
+	background: #ef5c5c;
+}
+
+.bg-blue {
+	background: #3d7bdc;
+}
+
+.bg-yellow {
+	background: #d2d211;
+}
+
+.bg-skyblue {
+	background: skyblue;
+}
+
+.text-grey {
+	color: #333333 !important;
+}
+
+.font-17 {
+	font-size: 17px;
+}
+
+.font-600 {
+	font-weight: 600;
+}
+
+.font-500 {
+	font-weight: 500;
+}
+
+.letter-spacing-05 {
+	letter-spacing: 0.5px;
+}
+
+.card {
+	margin: 15px 8px;
+}
+
+.options_1:first-child() {
+	background: #3d7bdc;
+}
+
+.options_1:second-child() {
+	background: #d2d211;
+}
+
+.options_1:nth-child(even) {
+	background: #d2d211;
+}
+
+.options_1:nth-child(odd) {
+	background: #ef5c5c;
+}
+
+.options_2:nth-child(even) {
+	background: #3ba73b;
+}
+
+.options_2:nth-child(odd) {
+	background: #ef5c5c;
+}
+
+.popup-overlay {
+	z-index: 1024 !important;
+}
+
+.mt-5 {
+	margin-top: 5%;
+}
+
+/*
+	Navigation Style
+*/
+
+.menu_sub div {
+	font-size: 16px;
+    background: #773f39;
+    padding: 10px;
+    margin: 10px 0px;
+}
+
+.menu_sub div a {
+	color: #ffffff;
+}
+
+.profile_pic {
+	width: 50px;
+    background: #f1f1f1;
+    border-radius: 90px;
+    padding: 5px;
+    box-shadow: 0px 2px 4px 0px rgba(185, 185, 185, 0.5);
+}
+
+.profile_name {
+	color: #ffffff;
+	margin: 15px 0px 0px;
+}
+
+.panel.panel-left.panel-reveal {
+	background: #fa8072;
+}
+
+.profile_username {
+	font-size: 15px;
+    background: #f1f1f1;
+    color: #333333;
+    border-radius: 5px;
+    width: auto;
+    padding: 3px 5px;
+    margin: 5px 5px 0 0;
+}
+
+
+a.tab-link.active {
+	border-bottom: 2px solid #fa8072;
+	color: #fa8072;
+}
+
+a.tab-link {
+	color: #333333;
+}

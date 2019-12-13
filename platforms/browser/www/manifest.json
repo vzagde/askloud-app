@@ -1,0 +1,12 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "AskLoud",
+  "short_name": "AskLoud",
+  "version": "com.phonegap.helloworld",
+  "description": "Poll app",
+  "author": "PhoneGap Team",
+  "icons": [],
+  "start_url": "index.html",
+  "theme_color": "#2196f3"
+}
