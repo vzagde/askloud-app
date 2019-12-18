@@ -10,6 +10,9 @@ var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "
 var category = '';
 var subcategory = '';
 
+var category_filter = '';
+var subcategory_filter = '';
+
 var myApp = new Framework7({
     // swipePanel: 'left',
     material: true,
@@ -32,16 +35,170 @@ myApp.onPageInit('index', function(page) {
 myApp.onPageInit('login', function(page) {
 });
 
+myApp.onPageInit('forgot-password', function(page) {
+    $("#forgot-email").on('change', function(e){
+        if ($("#forgot-email").val() == $("#forgot-verify-email").val()) {
+        } else {
+            $("#forgot-verify").val('NO');
+            $("#forgot-verify-email").val('');
+        }
+    })
+
+    $(".forgot_send_otp").click(function(e){
+        e.preventDefault();
+        if (!$("#forgot-email").val()) {
+            myApp.alert('Please enter your Email Id');
+            return false;
+        } else if (!$("#forgot-email").val().match(email_regex)) {
+            myApp.alert('Please enter valid Email Id');
+            return false;
+        } else {
+            $.ajax({
+                url: api_url+'generate_otp',
+                type: 'POST',
+                crossDomain: true,
+                data: {
+                    API_KEY: "DEV_AZHAR_ASKLOUD",
+                    email: $("#forgot-email").val(),
+                }
+            }).done(function(res){
+                if (res.status == 'Success') {
+                    myApp.alert(res.api_msg);
+                } else {
+                    myApp.alert(res.api_msg);
+                }
+            })
+        }
+    })
+
+    $(".forgot_verify_otp").click(function(e){
+        e.preventDefault();
+
+        if (!$("#forgot-email").val()) {
+            myApp.alert('Please enter your Email Id');
+            return false;
+        } else if (!$("#forgot-email").val().match(email_regex)) {
+            myApp.alert('Please enter valid Email Id');
+            return false;
+        } else if (!$("#forgot-otp").val()) {
+            myApp.alert('Please enter OTP');
+            return false;
+        } else {
+            $.ajax({
+                url: api_url+'verify_otp',
+                type: 'POST',
+                crossDomain: true,
+                data: {
+                    API_KEY: "DEV_AZHAR_ASKLOUD",
+                    email: $("#forgot-email").val(),
+                    otp: $("#forgot-otp").val(),
+                }
+            }).done(function(res){
+                if (res.status == 'Success') {
+                    myApp.alert(res.api_msg);
+                    $("#forgot-verify").val('YES');
+                    $("#forgot-verify-email").val($("#forgot-email").val());
+                } else {
+                    myApp.alert(res.api_msg);
+                }
+            })
+        }
+    })
+});
+
 myApp.onPageInit('register', function(page) {
+    $("#signup-email").on('change', function(e){
+        if ($("#signup-email").val() == $("#signup-verify-email").val()) {
+        } else {
+            $("#signup-verify").val('NO');
+            $("#signup-verify-email").val('');
+        }
+    })
+
+    $(".send_otp").click(function(e){
+        e.preventDefault();
+        if (!$("#signup-email").val()) {
+            myApp.alert('Please enter your Email Id');
+            return false;
+        } else if (!$("#signup-email").val().match(email_regex)) {
+            myApp.alert('Please enter valid Email Id');
+            return false;
+        } else {
+            $.ajax({
+                url: api_url+'generate_otp',
+                type: 'POST',
+                crossDomain: true,
+                data: {
+                    API_KEY: "DEV_AZHAR_ASKLOUD",
+                    email: $("#signup-email").val(),
+                }
+            }).done(function(res){
+                if (res.status == 'Success') {
+                    myApp.alert(res.api_msg);
+                } else {
+                    myApp.alert(res.api_msg);
+                }
+            })
+        }
+    })
+
+    $(".verify_otp").click(function(e){
+        e.preventDefault();
+
+        if (!$("#signup-email").val()) {
+            myApp.alert('Please enter your Email Id');
+            return false;
+        } else if (!$("#signup-email").val().match(email_regex)) {
+            myApp.alert('Please enter valid Email Id');
+            return false;
+        } else if (!$("#signup-otp").val()) {
+            myApp.alert('Please enter OTP');
+            return false;
+        } else {
+            $.ajax({
+                url: api_url+'verify_otp',
+                type: 'POST',
+                crossDomain: true,
+                data: {
+                    API_KEY: "DEV_AZHAR_ASKLOUD",
+                    email: $("#signup-email").val(),
+                    otp: $("#signup-otp").val(),
+                }
+            }).done(function(res){
+                if (res.status == 'Success') {
+                    myApp.alert(res.api_msg);
+                    $("#signup-verify").val('YES');
+                    $("#signup-verify-email").val($("#signup-email").val());
+                } else {
+                    myApp.alert(res.api_msg);
+                }
+            })
+        }
+    })
 });
 
 myApp.onPageInit('dashboard', function(page) {
-    if (token !== undefined) { $(".profile_name").html(token.first_name); }
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
     load_poll_list();
 });
 
+myApp.onPageInit('news', function(page) {
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
+    load_news();
+});
+
+myApp.onPageInit('category', function(page) {
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
+    load_category();
+});
+
+myApp.onPageInit('subcategory', function(page) {
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
+    load_subcategory();
+});
+
 myApp.onPageInit('create_poll', function(page) {
-    if (token !== undefined) { $(".profile_name").html(token.first_name); }
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
     $("#createpoll-category").html('');
     $("#createpoll-subcategory").html('');
     $.ajax({
@@ -81,12 +238,12 @@ myApp.onPageInit('create_poll', function(page) {
 });
 
 myApp.onPageInit('profile', function(page) {
-    if (token !== undefined) { $(".profile_name").html(token.first_name); }
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
     load_profile_poll_list();
 });
 
 myApp.onPageInit('edit_profile', function(page) {
-    if (token !== undefined) { $(".profile_name").html(token.first_name); }
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
     $("#editprofile-id").val(token.id);
     $("#editprofile-name").val(token.first_name);
     $("#editprofile-email").val(token.email);
@@ -98,13 +255,13 @@ myApp.onPageInit('edit_profile', function(page) {
 });
 
 myApp.onPageInit('create-multiple-options', function(page) {
-    if (token !== undefined) { $(".profile_name").html(token.first_name); }
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
 });
 
 myApp.onPageInit('create-a-b', function(page) {
-    if (token !== undefined) { $(".profile_name").html(token.first_name); }
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
 });
 
 myApp.onPageInit('create-rating', function(page) {
-    if (token !== undefined) { $(".profile_name").html(token.first_name); }
+    if (token !== undefined) { $(".profile_name").html(token.first_name); $(".profile_username").html(token.status); }
 });

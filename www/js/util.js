@@ -12,7 +12,7 @@ function onDeviceReady() {
     } else {
         myApp.hideIndicator();
         mainView.router.load({
-            url: 'dashboard.html',
+            url: 'category.html',
             query: {
                 id: token
             },
@@ -25,7 +25,7 @@ function onDeviceReady() {
         var page = myApp.getCurrentView().activePage;
         myApp.hideIndicator();
         image_from_device = '';
-        if (page.name == "dashboard" || page.name == "index") {
+        if (page.name == "category" || page.name == "index") {
             myApp.confirm('Are you sure you want to exit the app?', function() {
                 navigator.app.clearHistory();
                 navigator.app.exitApp();
@@ -54,6 +54,8 @@ function load_poll_list() {
 		crossDomain: true,
 		data: {
 			API_KEY: 'DEV_AZHAR_ASKLOUD',
+			category: category_filter,
+			subcategory: subcategory_filter,
 		}
 	}).done(function(res){
 		var html = '';
@@ -68,11 +70,19 @@ function load_poll_list() {
 					'<p class="font-17">'+value.poll_header+'</p>';
 			if (value.poll_type == 1) {
 				$.each(value.poll_options, function(i, v){
-					html += '<div class="option_selection options_1 text-center col option'+i+'">'+v.poll_options+' <b>'+(v.poll_count/value.total_poll_count)*100+'%</b></div>';
+					var per_val = Number(parseInt((v.poll_count/value.total_poll_count)*100));
+					if (isNaN(per_val)) {
+						per_val = 0;
+					}
+					html += '<div class="option_selection options_1 text-center col option'+i+'">'+v.poll_options+' <b>'+per_val+'%</b></div>';
 				})
 			} else if (value.poll_type == 2) {
 				$.each(value.poll_options, function(i, v) {
-					html += '<div class="option_selection options_2 text-center col option'+i+'">'+v.poll_options+' <b>'+(v.poll_count/value.total_poll_count)*100+'%</b></div>';
+					var per_val = Number(parseInt((v.poll_count/value.total_poll_count)*100));
+					if (isNaN(per_val)) {
+						per_val = 0;
+					}
+					html += '<div class="option_selection options_2 text-center col option'+i+'">'+v.poll_options+' <b>'+per_val+'%</b></div>';
 				})
 			} else {
 				for (var i = 1; i <= 10; i++) {
@@ -340,13 +350,17 @@ function submit_poll_rating() {
 				poll_type: 3,
 				poll_que: $("#input_poll_rating_text").val(),
 				user_id: token.id,
+				category_id: category,
+				subcategory_id: subcategory,
 			}
 		}).done(function(res){
 			console.log(res);
 			if (res.status == 'Success') {
+				category = '';
+				subcategory = '';
 				myApp.alert(res.api_msg);
 				mainView.router.load({
-		            url: 'dashboard.html',
+		            url: 'category.html',
 		            query: {
 		                poll_type: 3,
 		                user_id: token.id,
@@ -385,13 +399,17 @@ function submit_poll_a_b() {
 					poll_que: $("#input_poll_a_b_text").val(),
 					poll_options: option_arr,
 					user_id: token.id,
+					category_id: category,
+					subcategory_id: subcategory,
 				}
 			}).done(function(res){
 				console.log(res);
 				if (res.status == 'Success') {
+					category = '';
+					subcategory = '';
 					myApp.alert(res.api_msg);
 					mainView.router.load({
-			            url: 'dashboard.html',
+			            url: 'category.html',
 			            query: {
 			                poll_type: 3,
 			                user_id: token.id,
@@ -432,13 +450,17 @@ function submit_poll_multiple_options() {
 					poll_que: $("#input_poll_multiple_options_text").val(),
 					poll_options: option_arr,
 					user_id: token.id,
+					category_id: category,
+					subcategory_id: subcategory,
 				}
 			}).done(function(res){
 				console.log(res);
 				if (res.status == 'Success') {
+					category = '';
+					subcategory = '';
 					myApp.alert(res.api_msg);
 					mainView.router.load({
-			            url: 'dashboard.html',
+			            url: 'category.html',
 			            query: {
 			                poll_type: 3,
 			                user_id: token.id,
@@ -477,7 +499,7 @@ function login() {
 				Lockr.set('token', res.data);
             	token = res.data;
 				mainView.router.load({
-		            url: 'dashboard.html',
+		            url: 'category.html',
 		        });
 			} else {
 				myApp.alert(res.api_msg);
@@ -515,6 +537,9 @@ function register() {
 	} else if (!$("#signup-dob").val()) {
 		myApp.alert('Please enter your date of birth!');
 		return false;
+	} else if (!$("#signup-verify") == 'YES') {
+		myApp.alert('Please verify your Email Id!');
+		return false;
 	} else {
 		$.ajax({
 			url: api_url+'signup',
@@ -535,7 +560,50 @@ function register() {
 				Lockr.set('token', res.data);
             	token = res.data;
 				mainView.router.load({
-		            url: 'dashboard.html',
+		            url: 'category.html',
+		        });
+			} else {
+				myApp.alert(res.api_msg);
+				return false;
+			}
+		}).fail(function(res){
+			myApp.alert('Some technical error occured, Please try again later!');
+			return false;
+		})
+	}
+}
+
+function update_password() {
+	if (!$("#forgot-email").val()) {
+		myApp.alert('Please enter your email id!');
+		return false;
+	} else if (!$("#forgot-password").val()) {
+		myApp.alert('Please enter password!');
+		return false;
+	} else if (!$("#forgot-cpassword").val()) {
+		myApp.alert('Please enter confirm password!');
+		return false;
+	} else if ($("#forgot-password").val() !== $("#forgot-cpassword").val()) {
+		myApp.alert('Password does not match!');
+		return false;
+	} else if (!$("#forgot-verify") == 'YES') {
+		myApp.alert('Please verify your Email Id!');
+		return false;
+	} else {
+		$.ajax({
+			url: api_url+'update_password',
+			type: 'POST',
+			crossDomain: true,
+			data: {
+				API_KEY: 'DEV_AZHAR_ASKLOUD',
+				email: $("#forgot-email").val(),
+				password: $("#forgot-password").val(),
+				cpassword: $("#forgot-cpassword").val(),
+			}
+		}).done(function(res){
+			if (res.status == 'Success') {
+				mainView.router.load({
+		            url: 'login.html',
 		        });
 			} else {
 				myApp.alert(res.api_msg);
@@ -587,7 +655,7 @@ function edit_profile() {
 				Lockr.set('token', res.data);
             	token = res.data;
 				mainView.router.load({
-		            url: 'dashboard.html',
+		            url: 'category.html',
 		        });
 			} else {
 				myApp.alert(res.api_msg);
@@ -701,4 +769,113 @@ function load_profile_poll_list() {
 	}).error(function(res){
 		console.log(res);
 	})
+}
+
+function load_category() {
+	$.ajax({
+		url: api_url+'get_category',
+		type: 'POST',
+		crossDomain: true,
+		data: {
+			API_KEY: 'DEV_AZHAR_ASKLOUD',
+		}
+	}).done(function(res){
+		$("#category_dynamic").html('');
+		var html = '';
+		if (res.status == 'Success') {
+			$.each(res.data, function(index, value){
+				html += '<li class="card" onclick="load_subcategory_page('+value.id+')">'+
+	                        '<div class="card-header">'+value.category_name+'</div>'+
+	                        '<div class="card-footer">View Polls</div>'+
+	                    '</li>';
+			})
+
+			$("#category_dynamic").html(html);
+		} else {
+			myApp.alert(res.api_msg);
+		}
+	}).error(function(res){
+		myApp.alert('Network Error!');
+	})
+}
+
+function load_subcategory_page(category_id) {
+	category_filter = category_id;
+
+	mainView.router.load({
+        url: 'sub-category.html',
+    });
+}
+
+function load_subcategory() {
+	$.ajax({
+		url: api_url+'get_sub_category',
+		type: 'POST',
+		crossDomain: true,
+		data: {
+			API_KEY: 'DEV_AZHAR_ASKLOUD',
+			category_id: category_filter,
+		}
+	}).done(function(res){
+		$("#subcategory_dynamic").html('');
+		var html = '';
+		if (res.status == 'Success') {
+			$.each(res.data, function(index, value){
+				html += '<li class="card" onclick="load_polls('+value.id+')">'+
+	                        '<div class="card-header">'+value.category_name+'</div>'+
+	                        '<div class="card-footer">View Polls</div>'+
+	                    '</li>';
+			})
+
+			$("#subcategory_dynamic").html(html);
+		} else {
+			myApp.alert(res.api_msg);
+		}
+	}).fail(function(res){
+		myApp.alert('Network Error!');
+	})
+}
+
+function load_polls(subcategory_id) {
+	subcategory_filter = subcategory_id;
+
+	mainView.router.load({
+        url: 'dashboard.html',
+    });
+}
+
+function load_news() {
+	$.ajax({
+		url: api_url+'load_news',
+		type: 'POST',
+		crossDomain: true,
+		data: {
+			API_KEY: 'DEV_AZHAR_ASKLOUD',
+		}
+	}).done(function(res){
+		$("#news_dynamic").html('');
+		var html = '';
+		if (res.status == 'Success') {
+			$.each(res.data, function(index, value){
+				html += '<li class="card" onclick="open_link('+value.link+')">'+
+	                        '<div class="card-header">'+value.title+'</div>'+
+	                        '<div class="card-content">'+
+	                            '<div class="card-content-inner">'+value.desc+'</div>'+
+	                        '</div>'+
+	                        '<div class="card-footer">Publish Date: '+value.pubDate+'</div>'+
+	                    '</li>';
+			})
+
+			$("#news_dynamic").html(html);
+		} else {
+			myApp.alert(res.api_msg);
+		}
+	}).error(function(res){
+		myApp.alert('Network Error!');
+	})
+}
+
+function open_link(link) {
+	window.open(link, '_system');
+	return false;
 }
