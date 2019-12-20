@@ -602,6 +602,7 @@ function update_password() {
 			}
 		}).done(function(res){
 			if (res.status == 'Success') {
+				myApp.alert('Password updated successfully!');
 				mainView.router.load({
 		            url: 'login.html',
 		        });
@@ -690,33 +691,38 @@ function load_profile_poll_list() {
 					'<div class="card-content">'+
 					'<div class="card-content-inner">'+
 					'<p class="font-17">'+value.poll_header+'</p>';
+
 			if (value.poll_type == 1) {
 				$.each(value.poll_options, function(i, v){
-					html += '<div class="option_selection options_1 text-center col option'+i+'">'+v.poll_options+'</div>';
+					var per_val = Number(parseInt((v.poll_count/value.total_poll_count)*100));
+					if (isNaN(per_val)) {
+						per_val = 0;
+					}
+					html += '<div class="option_selection options_1 text-center col option'+i+'">'+v.poll_options+' <b>'+per_val+'%</b></div>';
 				})
 			} else if (value.poll_type == 2) {
 				$.each(value.poll_options, function(i, v) {
-					html += '<div class="option_selection options_2 text-center col option'+i+'">'+v.poll_options+'</div>';
+					var per_val = Number(parseInt((v.poll_count/value.total_poll_count)*100));
+					if (isNaN(per_val)) {
+						per_val = 0;
+					}
+					html += '<div class="option_selection options_2 text-center col option'+i+'">'+v.poll_options+' <b>'+per_val+'%</b></div>';
 				})
 			} else {
-				html += '<span class="option_selection text-center col star1 bg-yellow">1</span>'+
-                        '<span class="option_selection text-center col star2 bg-yellow">2</span>'+
-                        '<span class="option_selection text-center col star3 bg-yellow">3</span>'+
-                        '<span class="option_selection text-center col star4 bg-yellow">4</span>'+
-                        '<span class="option_selection text-center col star5 bg-yellow">5</span>'+
-                        '<span class="option_selection text-center col star6 bg-yellow">6</span>'+
-                        '<span class="option_selection text-center col star7 bg-yellow">7</span>'+
-                        '<span class="option_selection text-center col star8 bg-yellow">8</span>'+
-                        '<span class="option_selection text-center col star9">9</span>'+
-                        '<span class="option_selection text-center col star10">10</span>';
+				for (var i = 1; i <= 10; i++) {
+					if (value.poll_avg >= i) {
+						html += '<span class="option_selection text-center col star'+i+' bg-yellow">'+i+'</span>';
+					} else {
+						html += '<span class="option_selection text-center col star'+i+'">'+i+'</span>';
+					}
+				}
 			}
-			
+
 			html += '<p class="color-gray">'+value.created_date+'</p>'+
 					'</div>'+
 					'</div>'+
 					'<div class="card-footer">'+
-					'<a href="#" class="open-popup" data-pollid="'+value.id+'">Poll</a>'+
-					'<a href="#">No. Of Pollls: <span>100</span></a>'+
+					'<a href="#">No. Of Pollls: <span>'+value.total_poll_count+'</span></a>'+
 					'</div>'+
 					'</div>';
 		})
@@ -734,35 +740,41 @@ function load_profile_poll_list() {
 					'<div class="card-content">'+
 					'<div class="card-content-inner">'+
 					'<p class="font-17">'+value.poll_header+'</p>';
+
 			if (value.poll_type == 1) {
 				$.each(value.poll_options, function(i, v){
-					html += '<div class="option_selection options_1 text-center col option'+i+'">'+v.poll_options+'</div>';
+					var per_val = Number(parseInt((v.poll_count/value.total_poll_count)*100));
+					if (isNaN(per_val)) {
+						per_val = 0;
+					}
+					html += '<div class="option_selection options_1 text-center col option'+i+'">'+v.poll_options+' <b>'+per_val+'%</b></div>';
 				})
 			} else if (value.poll_type == 2) {
 				$.each(value.poll_options, function(i, v) {
-					html += '<div class="option_selection options_2 text-center col option'+i+'">'+v.poll_options+'</div>';
+					var per_val = Number(parseInt((v.poll_count/value.total_poll_count)*100));
+					if (isNaN(per_val)) {
+						per_val = 0;
+					}
+					html += '<div class="option_selection options_2 text-center col option'+i+'">'+v.poll_options+' <b>'+per_val+'%</b></div>';
 				})
 			} else {
-				html += '<span class="option_selection text-center col star1 bg-yellow">1</span>'+
-                        '<span class="option_selection text-center col star2 bg-yellow">2</span>'+
-                        '<span class="option_selection text-center col star3 bg-yellow">3</span>'+
-                        '<span class="option_selection text-center col star4 bg-yellow">4</span>'+
-                        '<span class="option_selection text-center col star5 bg-yellow">5</span>'+
-                        '<span class="option_selection text-center col star6 bg-yellow">6</span>'+
-                        '<span class="option_selection text-center col star7 bg-yellow">7</span>'+
-                        '<span class="option_selection text-center col star8 bg-yellow">8</span>'+
-                        '<span class="option_selection text-center col star9">9</span>'+
-                        '<span class="option_selection text-center col star10">10</span>';
+				for (var i = 1; i <= 10; i++) {
+					if (value.poll_avg >= i) {
+						html += '<span class="option_selection text-center col star'+i+' bg-yellow">'+i+'</span>';
+					} else {
+						html += '<span class="option_selection text-center col star'+i+'">'+i+'</span>';
+					}
+				}
 			}
-			
+					
 			html += '<p class="color-gray">'+value.created_date+'</p>'+
 					'</div>'+
 					'</div>'+
 					'<div class="card-footer">'+
-					'<a href="#" class="open-popup" data-pollid="'+value.id+'">Poll</a>'+
-					'<a href="#">No. Of Pollls: <span>100</span></a>'+
+					'<a href="#">No. Of Pollls: <span>'+value.total_poll_count+'</span></a>'+
 					'</div>'+
 					'</div>';
+
 		})
 
 		$("#answered_polls").html(html);
